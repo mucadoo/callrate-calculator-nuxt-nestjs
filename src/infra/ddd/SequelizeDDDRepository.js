@@ -1,6 +1,6 @@
 const DDDMapper = require('./SequelizeDDDMapper');
 
-class SequelizeDDDsRepository {
+class SequelizeDDDRepository {
   constructor({ DDDModel }) {
     this.DDDModel = DDDModel;
   }
@@ -34,4 +34,4 @@ class SequelizeDDDsRepository {
 
 }
 
-module.exports = SequelizeDDDsRepository;
+module.exports = SequelizeDDDRepository;

@@ -7,8 +7,16 @@ const {
   GetAllDDDs,
   GetDDD
 } = require('./app/ddd');
+const {
+  GetCallingPlan
+} = require('./app/callingPlan');
+const {
+  GetCallingRate
+} = require('./app/callingRate');
 
 const DDDSerializer = require('./interfaces/http/ddd/DDDSerializer');
+const CallingPlanSerializer = require('./interfaces/http/callingPlan/CallingPlanSerializer');
+const CallingRateSerializer = require('./interfaces/http/callingRate/CallingRateSerializer');
 
 const Server = require('./interfaces/http/Server');
 const router = require('./interfaces/http/router');
@@ -18,8 +26,10 @@ const devErrorHandler = require('./interfaces/http/errors/devErrorHandler');
 const swaggerMiddleware = require('./interfaces/http/swagger/swaggerMiddleware');
 
 const logger = require('./infra/logging/logger');
-const SequelizeDDDsRepository = require('./infra/ddd/SequelizeDDDsRepository');
-const { database, DDD: DDDModel } = require('./infra/database/models');
+const SequelizeDDDRepository = require('./infra/ddd/SequelizeDDDRepository');
+const SequelizeCallingPlanRepository = require('./infra/callingPlan/SequelizeCallingPlanRepository');
+const SequelizeCallingRateRepository = require('./infra/callingRate/SequelizeCallingRateRepository');
+const { database, DDD: DDDModel, CallingPlan: CallingPlanModel, CallingRate: CallingRateModel } = require('./infra/database/models');
 
 const container = createContainer();
 
@@ -50,24 +60,32 @@ container
 
 // Repositories
 container.register({
-  dddsRepository: asClass(SequelizeDDDsRepository).singleton()
+  dddRepository: asClass(SequelizeDDDRepository).singleton(),
+  callingPlanRepository: asClass(SequelizeCallingPlanRepository).singleton(),
+  callingRateRepository: asClass(SequelizeCallingRateRepository).singleton()
 });
 
 // Database
 container.register({
   database: asValue(database),
-  DDDModel: asValue(DDDModel)
+  DDDModel: asValue(DDDModel),
+  CallingPlanModel: asValue(CallingPlanModel),
+  CallingRateModel: asValue(CallingRateModel)
 });
 
 // Operations
 container.register({
   getAllDDDs: asClass(GetAllDDDs),
-  getDDD: asClass(GetDDD)
+  getDDD: asClass(GetDDD),
+  getCallingPlan: asClass(GetCallingPlan),
+  getCallingRate: asClass(GetCallingRate)
 });
 
 // Serializers
 container.register({
-  dddSerializer: asValue(DDDSerializer)
+  dddSerializer: asValue(DDDSerializer),
+  callingPlanSerializer: asValue(CallingPlanSerializer),
+  callingRateSerializer: asValue(CallingRateSerializer)
 });
 
 module.exports = container;

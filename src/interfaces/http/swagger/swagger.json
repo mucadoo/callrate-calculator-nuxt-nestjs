@@ -11,7 +11,70 @@
     }
   ],
   "paths": {
-    "/ddds": {
+    "/ddd": {
+      "get": {
+        "operationId": "listDDDs",
+        "tags": [
+          "DDDs"
+        ],
+        "responses": {
+          "200": {
+            "description": "List of all ddds",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DDD"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/ddds/{id}": {
+        "get": {
+          "operationId": "showDDD",
+          "tags": [
+            "DDDs"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Id of ddd to show",
+              "required": true,
+              "type": "integer",
+              "format": "int64"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Return ddd with given id",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/DDD"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "DDD not found",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/NotFoundError"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/callingPlans": {
       "get": {
         "operationId": "listDDDs",
         "tags": [
