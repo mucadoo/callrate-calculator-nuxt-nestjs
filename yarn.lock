@@ -515,7 +515,7 @@ chalk@^2.0.0, chalk@^2.1.0:
     escape-string-regexp "^1.0.5"
     supports-color "^4.0.0"
 
-chance@^1.0.4, chance@^1.0.6:
+chance@^1.0.4:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/chance/-/chance-1.0.6.tgz#4734f62d02b738cdc2882d8b5d41f89af49e7bfd"
 

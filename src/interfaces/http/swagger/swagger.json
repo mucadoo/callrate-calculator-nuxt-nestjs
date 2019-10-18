@@ -15,7 +15,7 @@
       "get": {
         "operationId": "listDDDs",
         "tags": [
-          "DDDs"
+          "DDD"
         ],
         "responses": {
           "200": {
@@ -33,11 +33,11 @@
           }
         }
       },
-      "/ddds/{id}": {
+      "/ddd/{id}": {
         "get": {
           "operationId": "showDDD",
           "tags": [
-            "DDDs"
+            "DDD"
           ],
           "parameters": [
             {
@@ -74,39 +74,18 @@
         }
       }
     },
-    "/callingPlans": {
-      "get": {
-        "operationId": "listDDDs",
-        "tags": [
-          "DDDs"
-        ],
-        "responses": {
-          "200": {
-            "description": "List of all ddds",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/DDD"
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "/ddds/{id}": {
+    "/callingPlan": {
+      "/callingPlan/{id}": {
         "get": {
-          "operationId": "showDDD",
+          "operationId": "showCallingPlan",
           "tags": [
-            "DDDs"
+            "CallingPlan"
           ],
           "parameters": [
             {
               "name": "id",
               "in": "path",
-              "description": "Id of ddd to show",
+              "description": "Id of Calling Plan to show",
               "required": true,
               "type": "integer",
               "format": "int64"
@@ -114,7 +93,7 @@
           ],
           "responses": {
             "200": {
-              "description": "Return ddd with given id",
+              "description": "Return Calling Plan with given id",
               "content": {
                 "application/json": {
                   "schema": {
@@ -124,7 +103,49 @@
               }
             },
             "404": {
-              "description": "DDD not found",
+              "description": "Calling Plan not found",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/NotFoundError"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/callingRate": {
+      "/callingRate/{id}": {
+        "get": {
+          "operationId": "showCallingRate",
+          "tags": [
+            "CallingRate"
+          ],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "Id of Calling Rate to show",
+              "required": true,
+              "type": "integer",
+              "format": "int64"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Return Calling Rate with given id",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/CallingRate"
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Calling Rate not found",
               "content": {
                 "application/json": {
                   "schema": {
@@ -144,6 +165,42 @@
         "allOf": [
           {
             "$ref": "#/components/schemas/NewDDD"
+          },
+          {
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          }
+        ]
+      },
+      "CallingPlan": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewCallingPlan"
+          },
+          {
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          }
+        ]
+      },
+      "CallingRate": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/NewCallingRate"
           },
           {
             "required": [
