@@ -8,14 +8,9 @@
     "node": ">=7.6.0"
   },
   "scripts": {
-    "start": "node cluster.js",
-    "prod": "cross-env NODE_PATH=. NODE_ENV=production",
     "dev": "cross-env NODE_PATH=. NODE_ENV=development nodemon",
-    "test:all": "npm run test:unit && npm run test:features",
-    "test:unit": "cross-env NODE_PATH=. NODE_ENV=test mocha --opts test/mocha.opts.unit",
-    "test:features": "cross-env NODE_PATH=. NODE_ENV=test mocha --opts test/mocha.opts.features",
-    "sequelize": "cross-env NODE_PATH=. sequelize",
-    "console": "cross-env NODE_PATH=. node src/interfaces/console/index.js"
+    "test": "cross-env NODE_PATH=. NODE_ENV=test mocha --opts test/mocha.opts.unit",
+    "sequelize": "cross-env NODE_PATH=. sequelize"
   },
   "repository": {},
   "author": "Samuel Britto <samuelgiordano@live.com>",
