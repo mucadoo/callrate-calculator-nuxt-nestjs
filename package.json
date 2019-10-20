@@ -8,6 +8,7 @@
     "node": ">=7.6.0"
   },
   "scripts": {
+    "prod": "cross-env NODE_PATH=. NODE_ENV=production",
     "dev": "cross-env NODE_PATH=. NODE_ENV=development nodemon",
     "test": "cross-env NODE_PATH=. NODE_ENV=test mocha --opts test/mocha.opts.unit",
     "sequelize": "cross-env NODE_PATH=. sequelize"

@@ -5,6 +5,12 @@ class SequelizeCallingPlanRepository {
     this.CallingPlanModel = CallingPlanModel;
   }
 
+  async getAll(...args) {
+    const callingPlans = await this.CallingPlanModel.findAll(...args);
+
+    return callingPlans.map(CallingPlanMapper.toEntity);
+  }
+
   async getById(id) {
     const callingPlan = await this._getById(id);
 

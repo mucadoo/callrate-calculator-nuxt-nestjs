@@ -8,17 +8,16 @@ const DDDController = {
 
     router.use(inject('dddSerializer'));
 
-    router.get('/', inject('getAllDDDs'), this.index);
-    router.get('/:id', inject('getDDD'), this.show);
+    router.get('/', inject('getDDDs'), this.index);
 
     return router;
   },
 
   index(req, res, next) {
-    const { getAllDDDs, dddSerializer } = req;
-    const { SUCCESS, ERROR } = getAllDDDs.outputs;
+    const { getDDDs, dddSerializer } = req;
+    const { SUCCESS, ERROR } = getDDDs.outputs;
 
-    getAllDDDs
+    getDDDs
       .on(SUCCESS, (ddds) => {
         res
           .status(Status.OK)
@@ -26,30 +25,8 @@ const DDDController = {
       })
       .on(ERROR, next);
 
-    getAllDDDs.execute();
-  },
-
-  show(req, res, next) {
-    const { getDDD, dddSerializer } = req;
-
-    const { SUCCESS, ERROR, NOT_FOUND } = getDDD.outputs;
-
-    getDDD
-      .on(SUCCESS, (ddd) => {
-        res
-          .status(Status.OK)
-          .json(dddSerializer.serialize(ddd));
-      })
-      .on(NOT_FOUND, (error) => {
-        res.status(Status.NOT_FOUND).json({
-          type: 'NotFoundError',
-          details: error.details
-        });
-      })
-      .on(ERROR, next);
-
-    getDDD.execute(Number(req.params.id));
-  },
+    getDDDs.execute();
+  }
 
 };
 

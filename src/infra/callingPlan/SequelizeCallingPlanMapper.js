@@ -8,9 +8,9 @@ const SequelizeCallingPlanMapper = {
   },
 
   toDatabase(survivor) {
-    const { code } = survivor;
+    const { name, minutes, exceededMinutesPercent } = survivor;
 
-    return { code };
+    return { name, minutes, exceededMinutesPercent };
   }
 };
 

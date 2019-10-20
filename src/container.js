@@ -4,11 +4,10 @@ const { scopePerRequest } = require('awilix-express');
 const config = require('../config');
 const Application = require('./app/Application');
 const {
-  GetAllDDDs,
-  GetDDD
+  GetDDDs
 } = require('./app/ddd');
 const {
-  GetCallingPlan
+  GetCallingPlans
 } = require('./app/callingPlan');
 const {
   GetCallingRate
@@ -66,9 +65,8 @@ container.register({
 
 // Operations
 container.register({
-  getAllDDDs: asClass(GetAllDDDs),
-  getDDD: asClass(GetDDD),
-  getCallingPlan: asClass(GetCallingPlan),
+  getDDDs: asClass(GetDDDs),
+  getCallingPlans: asClass(GetCallingPlans),
   getCallingRate: asClass(GetCallingRate)
 });
 

@@ -1,6 +1,6 @@
 const Operation = require('src/app/Operation');
 
-class GetAllDDDs extends Operation {
+class GetDDDs extends Operation {
   constructor({ dddRepository }) {
     super();
     this.dddRepository = dddRepository;
@@ -21,6 +21,6 @@ class GetAllDDDs extends Operation {
   }
 }
 
-GetAllDDDs.setOutputs(['SUCCESS', 'ERROR']);
+GetDDDs.setOutputs(['SUCCESS', 'ERROR']);
 
-module.exports = GetAllDDDs;
+module.exports = GetDDDs;
