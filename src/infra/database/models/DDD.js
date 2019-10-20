@@ -6,11 +6,11 @@ module.exports = function (sequelize, DataTypes) {
   }, {
     classMethods: {
       associate: function (models) {
-        DDD.hasMany(models.callingRate, {
+        DDD.hasMany(models.CallingRate, {
           foreignKey: 'originDDDId',
           as: 'originCallingRate',
         });
-        DDD.hasMany(models.callingRate, {
+        DDD.hasMany(models.CallingRate, {
           foreignKey: 'destinationDDDId',
           as: 'destinationCallingRate',
         });

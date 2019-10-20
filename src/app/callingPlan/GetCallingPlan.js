@@ -10,8 +10,8 @@ class GetCallingPlan extends Operation {
     const { SUCCESS, NOT_FOUND } = this.outputs;
 
     try {
-      const user = await this.callingPlanRepository.getById(callingPlanId);
-      this.emit(SUCCESS, user);
+      const callingPlan = await this.callingPlanRepository.getById(callingPlanId);
+      this.emit(SUCCESS, callingPlan);
     } catch(error) {
       this.emit(NOT_FOUND, {
         type: error.message,

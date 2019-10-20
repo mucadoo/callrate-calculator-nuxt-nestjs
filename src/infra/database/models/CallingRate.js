@@ -6,11 +6,11 @@ module.exports = function (sequelize, DataTypes) {
   }, {
     classMethods: {
       associate: function (models) {
-        CallingRate.belongsTo(models.ddd, {
+        CallingRate.belongsTo(models.DDD, {
           foreignKey: 'originDDDId',
           as: 'originDDD',
         });
-        CallingRate.belongsTo(models.ddd, {
+        CallingRate.belongsTo(models.DDD, {
           foreignKey: 'destinationDDDId',
           as: 'destinationDDD',
         });

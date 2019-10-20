@@ -1,12 +1,7 @@
 class Application {
-  constructor({ server, database, logger }) {
+  constructor({ server, database }) {
     this.server = server;
     this.database = database;
-    this.logger = logger;
-
-    if(database && database.options.logging) {
-      database.options.logging = logger.info.bind(logger);
-    }
   }
 
   async start() {

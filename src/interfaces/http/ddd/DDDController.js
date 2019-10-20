@@ -2,7 +2,7 @@ const { Router } = require('express');
 const { inject } = require('awilix-express');
 const Status = require('http-status');
 
-const DDDsController = {
+const DDDController = {
   get router() {
     const router = Router();
 
@@ -53,4 +53,4 @@ const DDDsController = {
 
 };
 
-module.exports = DDDsController;
+module.exports = DDDController;

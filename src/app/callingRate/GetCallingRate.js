@@ -10,8 +10,8 @@ class GetCallingRate extends Operation {
     const { SUCCESS, NOT_FOUND } = this.outputs;
 
     try {
-      const user = await this.callingRateRepository.getById(callingRateId);
-      this.emit(SUCCESS, user);
+      const callingRate = await this.callingRateRepository.getById(callingRateId);
+      this.emit(SUCCESS, callingRate);
     } catch(error) {
       this.emit(NOT_FOUND, {
         type: error.message,

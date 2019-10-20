@@ -20,16 +20,12 @@ const CallingRateSerializer = require('./interfaces/http/callingRate/CallingRate
 
 const Server = require('./interfaces/http/Server');
 const router = require('./interfaces/http/router');
-const loggerMiddleware = require('./interfaces/http/logging/loggerMiddleware');
 const errorHandler = require('./interfaces/http/errors/errorHandler');
-const devErrorHandler = require('./interfaces/http/errors/devErrorHandler');
-const swaggerMiddleware = require('./interfaces/http/swagger/swaggerMiddleware');
 
-const logger = require('./infra/logging/logger');
 const SequelizeDDDRepository = require('./infra/ddd/SequelizeDDDRepository');
 const SequelizeCallingPlanRepository = require('./infra/callingPlan/SequelizeCallingPlanRepository');
 const SequelizeCallingRateRepository = require('./infra/callingRate/SequelizeCallingRateRepository');
-const { database, DDD: DDDModel, CallingPlan: CallingPlanModel, CallingRate: CallingRateModel } = require('./infra/database/models');
+const { database, DDD: DDDModel, CallingRate: CallingRateModel, CallingPlan: CallingPlanModel } = require('./infra/database/models');
 
 const container = createContainer();
 
@@ -40,8 +36,7 @@ container
     server: asClass(Server).singleton()
   })
   .register({
-    router: asFunction(router).singleton(),
-    logger: asFunction(logger).singleton()
+    router: asFunction(router).singleton()
   })
   .register({
     config: asValue(config)
@@ -50,12 +45,8 @@ container
 // Middlewares
 container
   .register({
-    loggerMiddleware: asFunction(loggerMiddleware).singleton()
-  })
-  .register({
     containerMiddleware: asValue(scopePerRequest(container)),
-    errorHandler: asValue(config.production ? errorHandler : devErrorHandler),
-    swaggerMiddleware: asValue([swaggerMiddleware])
+    errorHandler: asValue(errorHandler),
   });
 
 // Repositories

@@ -1,9 +1,8 @@
 const express = require('express');
 
 class Server {
-  constructor({ config, router, logger }) {
+  constructor({ config, router }) {
     this.config = config;
-    this.logger = logger;
     this.express = express();
 
     this.express.disable('x-powered-by');
@@ -15,7 +14,7 @@ class Server {
       const http = this.express
         .listen(this.config.web.port, () => {
           const { port } = http.address();
-          this.logger.info(`[p ${process.pid}] Listening at port ${port}`);
+          console.log(`[p ${process.pid}] Listening at port ${port}`);
           resolve();
         });
     });
