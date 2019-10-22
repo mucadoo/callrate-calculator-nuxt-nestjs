@@ -9,6 +9,7 @@ const CallingPlanController = {
     router.use(inject('callingPlanSerializer'));
 
     router.get('/', inject('getCallingPlans'), this.index);
+    router.get('/:id', inject('getCallingPlans'), this.show);
 
     return router;
   },

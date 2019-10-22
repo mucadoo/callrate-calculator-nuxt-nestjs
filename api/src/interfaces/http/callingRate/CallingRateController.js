@@ -13,6 +13,21 @@ const CallingRateController = {
     return router;
   },
 
+  index(req, res, next) {
+    const { getCallingRates, callingRateSerializer } = req;
+    const { SUCCESS, ERROR } = getCallingRates.outputs;
+
+    getDDDs
+        .on(SUCCESS, (callingRates) => {
+          res
+              .status(Status.OK)
+              .json(callingRates.map(callingRateSerializer.serialize));
+        })
+        .on(ERROR, next);
+
+    getDDDs.execute();
+  },
+
   show(req, res, next) {
     const { getCallingRate, callingRateSerializer } = req;
 
