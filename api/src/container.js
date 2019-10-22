@@ -13,7 +13,8 @@ const {
 } = require('./app/callingPlan');
 const {
   GetCallingRate,
-  GetCallingRates
+  GetCallingRates,
+  GetCallingRateBYDDD
 } = require('./app/callingRate');
 
 const DDDSerializer = require('./interfaces/http/ddd/DDDSerializer');
@@ -73,7 +74,8 @@ container.register({
   getCallingPlan: asClass(GetCallingPlan),
   getCallingPlans: asClass(GetCallingPlans),
   getCallingRate: asClass(GetCallingRate),
-  getCallingRates: asClass(GetCallingRates)
+  getCallingRates: asClass(GetCallingRates),
+  getCallingRateBYDDD: asClass(GetCallingRateBYDDD)
 });
 
 // Serializers

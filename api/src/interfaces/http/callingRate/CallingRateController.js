@@ -10,7 +10,7 @@ const CallingRateController = {
 
     router.get('/', inject('getCallingRates'), this.index);
     router.get('/:id', inject('getCallingRate'), this.show);
-    //router.post('/getRate', inject('getRate'), this.showByDDD());
+    router.post('/getByDDD', inject('getByDDD'), this.showByDDD());
 
     return router;
   },
@@ -55,20 +55,14 @@ const CallingRateController = {
   },
 
   showByDDD(req, res, next) {
-    const { getRate, callingRateSerializer } = req;
+    const { getCallingRateBYDDD, callingRateSerializer } = req;
     const { SUCCESS, ERROR, VALIDATION_ERROR } = getRate.outputs;
 
-    getRate
+    getCallingRateBYDDD
         .on(SUCCESS, (callingRate) => {
           res
               .status(Status.OK)
               .json(callingRateSerializer.serialize(callingRate));
-        })
-        .on(VALIDATION_ERROR, (error) => {
-          res.status(Status.BAD_REQUEST).json({
-            type: 'ValidationError',
-            details: error.details
-          });
         })
         .on(NOT_FOUND, (error) => {
           res.status(Status.NOT_FOUND).json({
@@ -78,7 +72,7 @@ const CallingRateController = {
         })
         .on(ERROR, next);
 
-    getRate.execute(req.body);
+    getCallingRateBYDDD.execute(req.body);
   }
 
 };
