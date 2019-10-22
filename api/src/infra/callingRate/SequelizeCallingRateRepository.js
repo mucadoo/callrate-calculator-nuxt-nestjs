@@ -5,6 +5,12 @@ class SequelizeCallingRateRepository {
     this.CallingRateModel = CallingRateModel;
   }
 
+  async getAll(...args) {
+    const callingRates = await this.CallingRateModel.findAll(...args);
+
+    return callingRates.map(CallingRateMapper.toEntity);
+  }
+
   async getById(id) {
     const callingRate = await this._getById(id);
 

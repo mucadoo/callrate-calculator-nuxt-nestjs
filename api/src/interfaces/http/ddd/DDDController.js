@@ -9,6 +9,7 @@ const DDDController = {
     router.use(inject('dddSerializer'));
 
     router.get('/', inject('getDDDs'), this.index);
+    router.get('/:id', inject('getDDD'), this.show);
 
     return router;
   },
@@ -26,6 +27,28 @@ const DDDController = {
       .on(ERROR, next);
 
     getDDDs.execute();
+  },
+
+  show(req, res, next) {
+    const { getDDD, dddSerializer } = req;
+
+    const { SUCCESS, ERROR, NOT_FOUND } = getDDD.outputs;
+
+    getDDD
+        .on(SUCCESS, (ddd) => {
+          res
+              .status(Status.OK)
+              .json(dddSerializer.serialize(ddd));
+        })
+        .on(NOT_FOUND, (error) => {
+          res.status(Status.NOT_FOUND).json({
+            type: 'NotFoundError',
+            details: error.details
+          });
+        })
+        .on(ERROR, next);
+
+    getDDD.execute(Number(req.params.id));
   }
 
 };

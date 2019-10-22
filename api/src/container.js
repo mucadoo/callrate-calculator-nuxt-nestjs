@@ -4,13 +4,16 @@ const { scopePerRequest } = require('awilix-express');
 const config = require('../config');
 const Application = require('./app/Application');
 const {
+  GetDDD,
   GetDDDs
 } = require('./app/ddd');
 const {
+  GetCallingPlan,
   GetCallingPlans
 } = require('./app/callingPlan');
 const {
-  GetCallingRate
+  GetCallingRate,
+  GetCallingRates
 } = require('./app/callingRate');
 
 const DDDSerializer = require('./interfaces/http/ddd/DDDSerializer');
@@ -65,9 +68,12 @@ container.register({
 
 // Operations
 container.register({
+  getDDD: asClass(GetDDD),
   getDDDs: asClass(GetDDDs),
+  getCallingPlan: asClass(GetCallingPlan),
   getCallingPlans: asClass(GetCallingPlans),
-  getCallingRate: asClass(GetCallingRate)
+  getCallingRate: asClass(GetCallingRate),
+  getCallingRates: asClass(GetCallingRates)
 });
 
 // Serializers

@@ -1,3 +1,4 @@
 module.exports = {
-  GetCallingRate: require('./GetCallingRate')
+  GetCallingRate: require('./GetCallingRate'),
+  GetCallingRates: require('./GetCallingRates')
 };
