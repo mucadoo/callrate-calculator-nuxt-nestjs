@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model DDD {
+  id              Int           @id @default(autoincrement())
+  code            String        @unique
+  originRates      CallingRate[] @relation("OriginDDD")
+  destinationRates CallingRate[] @relation("DestinationDDD")
+
+  @@map("ddd")
+}
+
+model CallingPlan {
+  id                     Int    @id @default(autoincrement())
+  name                   String
+  minutes                Int
+  exceededMinutesPercent Float
+
+  @@map("calling_plan")
+}
+
+model CallingRate {
+  id               Int   @id @default(autoincrement())
+  originDDDId      Int
+  destinationDDDId Int
+  ratePerMin       Float
+
+  originDDD      DDD @relation("OriginDDD", fields: [originDDDId], references: [id])
+  destinationDDD DDD @relation("DestinationDDD", fields: [destinationDDDId], references: [id])
+
+  @@map("calling_rate")
+}
