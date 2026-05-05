@@ -8,16 +8,14 @@ export class CalculationController {
   constructor(private readonly calculationService: CalculationService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Calculate call cost with and without plan' })
+  @ApiOperation({ summary: 'Compare call costs across providers for a destination country' })
   @ApiQuery({ name: 'destinationCountryId', type: Number })
   @ApiQuery({ name: 'minutes', type: Number })
-  @ApiQuery({ name: 'callingPlanId', type: Number })
-  calculate(
+  compareRates(
     @Query('destinationCountryId', ParseIntPipe) destinationCountryId: number,
     @Query('minutes', ParseIntPipe) minutes: number,
-    @Query('callingPlanId', ParseIntPipe) callingPlanId: number,
   ) {
-    return this.calculationService.calculate(destinationCountryId, minutes, callingPlanId);
+    return this.calculationService.compareRates(destinationCountryId, minutes);
   }
 }
 
