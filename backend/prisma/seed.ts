@@ -1,66 +1,37 @@
 import { PrismaClient } from '@prisma/client';
 import { PrismaMariaDb } from '@prisma/adapter-mariadb';
 
-const connectionString = process.env.DATABASE_URL;
-if (!connectionString) {
-  throw new Error('DATABASE_URL environment variable is not set');
-}
+const connectionString = process.env.DATABASE_URL || "mysql://root:admin@localhost:3306/callrate";
 const adapter = new PrismaMariaDb(connectionString);
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-  // Clear existing data to avoid duplicates on re-seed
   await prisma.callingRate.deleteMany({});
   await prisma.callingPlan.deleteMany({});
-  // AreaCode has relations, so we handle it with upsert or careful deletion
-  // For simplicity and since area codes haven't changed much, upsert is fine for them.
+  await prisma.provider.deleteMany({});
+  await prisma.country.deleteMany({});
 
-  const areaCodes = [
-    { code: '11' },
-    { code: '16' },
-    { code: '17' },
-    { code: '18' },
-  ];
+  const brazil = await prisma.country.create({ data: { name: 'Brazil', phoneCode: '55' } });
+  const usa = await prisma.country.create({ data: { name: 'USA', phoneCode: '1' } });
 
-  for (const area of areaCodes) {
-    await prisma.areaCode.upsert({
-      where: { code: area.code },
-      update: {},
-      create: area,
-    });
-  }
+  const globalTalk = await prisma.provider.create({ data: { name: 'GlobalTalk' } });
+  const uniConnect = await prisma.provider.create({ data: { name: 'UniConnect' } });
 
-  const callingPlans = [
-    { name: 'TalkMore 30', minutes: 30, exceededMinutesPercent: 10 },
-    { name: 'TalkMore 60', minutes: 60, exceededMinutesPercent: 10 },
-    { name: 'TalkMore 120', minutes: 120, exceededMinutesPercent: 10 },
-  ];
+  await prisma.callingPlan.createMany({
+    data: [
+      { name: 'TalkMore 30', minutes: 30, exceededMinutesPercent: 10, providerId: globalTalk.id },
+      { name: 'TalkMore 60', minutes: 60, exceededMinutesPercent: 10, providerId: globalTalk.id },
+      { name: 'UniWorld 100', minutes: 100, exceededMinutesPercent: 5, providerId: uniConnect.id },
+    ],
+  });
 
-  for (const plan of callingPlans) {
-    await prisma.callingPlan.create({
-      data: plan,
-    });
-  }
-
-  const area11 = (await prisma.areaCode.findUnique({ where: { code: '11' } }))!;
-  const area16 = (await prisma.areaCode.findUnique({ where: { code: '16' } }))!;
-  const area17 = (await prisma.areaCode.findUnique({ where: { code: '17' } }))!;
-  const area18 = (await prisma.areaCode.findUnique({ where: { code: '18' } }))!;
-
-  const callingRates = [
-    { originAreaId: area11.id, destinationAreaId: area16.id, ratePerMin: 1.9 },
-    { originAreaId: area16.id, destinationAreaId: area11.id, ratePerMin: 2.9 },
-    { originAreaId: area11.id, destinationAreaId: area17.id, ratePerMin: 1.7 },
-    { originAreaId: area17.id, destinationAreaId: area11.id, ratePerMin: 2.7 },
-    { originAreaId: area11.id, destinationAreaId: area18.id, ratePerMin: 0.9 },
-    { originAreaId: area18.id, destinationAreaId: area11.id, ratePerMin: 1.9 },
-  ];
-
-  for (const rate of callingRates) {
-    await prisma.callingRate.create({
-      data: rate,
-    });
-  }
+  await prisma.callingRate.createMany({
+    data: [
+      { destinationCountryId: brazil.id, providerId: globalTalk.id, ratePerMin: 1.9 },
+      { destinationCountryId: usa.id, providerId: globalTalk.id, ratePerMin: 5.5 },
+      { destinationCountryId: usa.id, providerId: uniConnect.id, ratePerMin: 0.5 },
+    ],
+  });
 }
 
 main()

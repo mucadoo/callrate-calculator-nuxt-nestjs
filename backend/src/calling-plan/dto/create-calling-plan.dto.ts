@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber, IsPositive, IsInt, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateCallingPlanDto {
@@ -16,4 +16,9 @@ export class CreateCallingPlanDto {
   @IsNumber()
   @IsPositive()
   exceededMinutesPercent: number;
+
+  @ApiProperty({ example: 1, description: 'The provider id', required: false })
+  @IsInt()
+  @IsOptional()
+  providerId?: number;
 }

@@ -8,30 +8,21 @@
     <a-card style="margin-bottom: 24px">
       <a-form :model="formState" @finish="handleCalculate" layout="vertical">
         <a-row :gutter="24">
-          <a-col :xs="24" :sm="12" :md="6">
-            <a-form-item label="Origin Area Code" name="originAreaId" :rules="[{ required: true, message: 'Select origin' }]">
-              <a-select v-model:value="formState.originAreaId" placeholder="Select" show-search>
-                <a-select-option v-for="area in areaCodes" :key="area.id" :value="area.id">
-                  Area {{ area.code }}
+          <a-col :xs="24" :sm="12" :md="8">
+            <a-form-item label="Destination Country" name="destinationCountryId" :rules="[{ required: true, message: 'Select country' }]">
+              <a-select v-model:value="formState.destinationCountryId" placeholder="Select" show-search>
+                <a-select-option v-for="country in countries" :key="country.id" :value="country.id">
+                  {{ country.name }} (+{{ country.phoneCode }})
                 </a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
-          <a-col :xs="24" :sm="12" :md="6">
-            <a-form-item label="Destination Area Code" name="destinationAreaId" :rules="[{ required: true, message: 'Select destination' }]">
-              <a-select v-model:value="formState.destinationAreaId" placeholder="Select" show-search>
-                <a-select-option v-for="area in areaCodes" :key="area.id" :value="area.id">
-                  Area {{ area.code }}
-                </a-select-option>
-              </a-select>
-            </a-form-item>
-          </a-col>
-          <a-col :xs="24" :sm="12" :md="6">
+          <a-col :xs="24" :sm="12" :md="8">
             <a-form-item label="Duration (minutes)" name="minutes" :rules="[{ required: true, message: 'Enter minutes' }]">
               <a-input-number v-model:value="formState.minutes" :min="1" style="width: 100%" />
             </a-form-item>
           </a-col>
-          <a-col :xs="24" :sm="12" :md="6">
+          <a-col :xs="24" :sm="12" :md="8">
             <a-form-item label="Calling Plan" name="callingPlanId" :rules="[{ required: true, message: 'Select plan' }]">
               <a-select v-model:value="formState.callingPlanId" placeholder="Select">
                 <a-select-option v-for="plan in plans" :key="plan.id" :value="plan.id">
@@ -102,14 +93,13 @@
 import { ref, onMounted, reactive, computed } from 'vue';
 import { message } from 'ant-design-vue';
 
-const areaCodes = ref<any[]>([]);
+const countries = ref<any[]>([]);
 const plans = ref<any[]>([]);
 const calculating = ref(false);
 const result = ref<any>(null);
 
 const formState = reactive({
-  originAreaId: null,
-  destinationAreaId: null,
+  destinationCountryId: null,
   minutes: 0,
   callingPlanId: null,
 });
@@ -124,11 +114,11 @@ const savings = computed(() => {
 
 onMounted(async () => {
   try {
-    const [areaCodesRes, plansRes] = await Promise.all([
-      $fetch(`${apiBase}/area-code`),
+    const [countriesRes, plansRes] = await Promise.all([
+      $fetch(`${apiBase}/country`),
       $fetch(`${apiBase}/calling-plan`),
     ]);
-    areaCodes.value = areaCodesRes as any[];
+    countries.value = countriesRes as any[];
     plans.value = plansRes as any[];
   } catch (error) {
     message.error('Failed to load initial data');
@@ -145,7 +135,7 @@ const handleCalculate = async () => {
     message.success('Calculation completed');
   } catch (error: any) {
     if (error.status === 404) {
-      message.warning('Rate not found for this route');
+      message.warning('Rate not found for this country');
     } else {
       message.error('Calculation error');
     }

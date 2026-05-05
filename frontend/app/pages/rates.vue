@@ -10,11 +10,8 @@
 
     <a-table :columns="columns" :data-source="rates" :loading="loading" row-key="id">
       <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'origin'">
-          Area {{ record.originArea.code }}
-        </template>
-        <template v-else-if="column.key === 'destination'">
-          Area {{ record.destinationArea.code }}
+        <template v-if="column.key === 'destination'">
+          {{ record.destinationCountry?.name }} (+{{ record.destinationCountry?.phoneCode }})
         </template>
         <template v-else-if="column.key === 'rate'">
           ${{ record.ratePerMin.toFixed(2) }}
@@ -43,24 +40,13 @@
     >
       <a-form :model="formState" layout="vertical" ref="formRef">
         <a-form-item
-          label="Origin Area Code"
-          name="originAreaId"
-          :rules="[{ required: true, message: 'Select origin area code' }]"
+          label="Destination Country"
+          name="destinationCountryId"
+          :rules="[{ required: true, message: 'Select country' }]"
         >
-          <a-select v-model:value="formState.originAreaId" placeholder="Select">
-            <a-select-option v-for="area in areaCodes" :key="area.id" :value="area.id">
-              Area {{ area.code }}
-            </a-select-option>
-          </a-select>
-        </a-form-item>
-        <a-form-item
-          label="Destination Area Code"
-          name="destinationAreaId"
-          :rules="[{ required: true, message: 'Select destination area code' }]"
-        >
-          <a-select v-model:value="formState.destinationAreaId" placeholder="Select">
-            <a-select-option v-for="area in areaCodes" :key="area.id" :value="area.id">
-              Area {{ area.code }}
+          <a-select v-model:value="formState.destinationCountryId" placeholder="Select">
+            <a-select-option v-for="country in countries" :key="country.id" :value="country.id">
+              {{ country.name }} (+{{ country.phoneCode }})
             </a-select-option>
           </a-select>
         </a-form-item>
@@ -82,7 +68,7 @@ import { message } from 'ant-design-vue';
 import { PlusOutlined } from '@ant-design/icons-vue';
 
 const rates = ref([]);
-const areaCodes = ref([]);
+const countries = ref([]);
 const loading = ref(false);
 const modalVisible = ref(false);
 const submitting = ref(false);
@@ -90,8 +76,7 @@ const editingId = ref<number | null>(null);
 const formRef = ref();
 
 const formState = reactive({
-  originAreaId: null,
-  destinationAreaId: null,
+  destinationCountryId: null,
   ratePerMin: 0,
 });
 
@@ -99,7 +84,6 @@ const config = useRuntimeConfig();
 const apiBase = config.public.apiBase;
 
 const columns = [
-  { title: 'Origin', key: 'origin' },
   { title: 'Destination', key: 'destination' },
   { title: 'Rate/Min', key: 'rate' },
   { title: 'Action', key: 'action' },
@@ -108,12 +92,12 @@ const columns = [
 const fetchData = async () => {
   loading.value = true;
   try {
-    const [ratesRes, areaCodesRes] = await Promise.all([
+    const [ratesRes, countriesRes] = await Promise.all([
       $fetch(`${apiBase}/calling-rate`),
-      $fetch(`${apiBase}/area-code`),
+      $fetch(`${apiBase}/country`),
     ]);
     rates.value = ratesRes;
-    areaCodes.value = areaCodesRes;
+    countries.value = countriesRes;
   } catch (error) {
     message.error('Failed to fetch data');
   } finally {
@@ -126,13 +110,11 @@ onMounted(fetchData);
 const showModal = (record?: any) => {
   if (record) {
     editingId.value = record.id;
-    formState.originAreaId = record.originAreaId;
-    formState.destinationAreaId = record.destinationAreaId;
+    formState.destinationCountryId = record.destinationCountryId;
     formState.ratePerMin = record.ratePerMin;
   } else {
     editingId.value = null;
-    formState.originAreaId = null;
-    formState.destinationAreaId = null;
+    formState.destinationCountryId = null;
     formState.ratePerMin = 0;
   }
   modalVisible.value = true;

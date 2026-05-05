@@ -1,20 +1,20 @@
 <template>
   <div>
     <div style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center">
-      <a-typography-title :level="4" style="margin: 0">Area Codes</a-typography-title>
+      <a-typography-title :level="4" style="margin: 0">Countries</a-typography-title>
       <a-button type="primary" @click="showModal()">
         <template #icon><plus-outlined /></template>
-        Add Area Code
+        Add Country
       </a-button>
     </div>
 
-    <a-table :columns="columns" :data-source="areaCodes" :loading="loading" row-key="id">
+    <a-table :columns="columns" :data-source="countries" :loading="loading" row-key="id">
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
           <a-space>
             <a @click="showModal(record)">Edit</a>
             <a-popconfirm
-              title="Are you sure delete this area code?"
+              title="Are you sure delete this country?"
               ok-text="Yes"
               cancel-text="No"
               @confirm="handleDelete(record.id)"
@@ -28,17 +28,24 @@
 
     <a-modal
       v-model:open="modalVisible"
-      :title="editingId ? 'Edit Area Code' : 'Add Area Code'"
+      :title="editingId ? 'Edit Country' : 'Add Country'"
       @ok="handleOk"
       :confirm-loading="submitting"
     >
       <a-form :model="formState" layout="vertical" ref="formRef">
         <a-form-item
-          label="Area Code"
-          name="code"
-          :rules="[{ required: true, message: 'Please input area code' }]"
+          label="Name"
+          name="name"
+          :rules="[{ required: true, message: 'Please input country name' }]"
         >
-          <a-input v-model:value="formState.code" placeholder="e.g. 11" />
+          <a-input v-model:value="formState.name" />
+        </a-form-item>
+        <a-form-item
+          label="Phone Code"
+          name="phoneCode"
+          :rules="[{ required: true, message: 'Please input phone code' }]"
+        >
+          <a-input v-model:value="formState.phoneCode" />
         </a-form-item>
       </a-form>
     </a-modal>
@@ -50,7 +57,7 @@ import { ref, onMounted, reactive } from 'vue';
 import { message } from 'ant-design-vue';
 import { PlusOutlined } from '@ant-design/icons-vue';
 
-const areaCodes = ref([]);
+const countries = ref([]);
 const loading = ref(false);
 const modalVisible = ref(false);
 const submitting = ref(false);
@@ -58,7 +65,8 @@ const editingId = ref<number | null>(null);
 const formRef = ref();
 
 const formState = reactive({
-  code: '',
+  name: '',
+  phoneCode: '',
 });
 
 const config = useRuntimeConfig();
@@ -66,30 +74,33 @@ const apiBase = config.public.apiBase;
 
 const columns = [
   { title: 'ID', dataIndex: 'id', key: 'id' },
-  { title: 'Code', dataIndex: 'code', key: 'code' },
+  { title: 'Name', dataIndex: 'name', key: 'name' },
+  { title: 'Phone Code', dataIndex: 'phoneCode', key: 'phoneCode' },
   { title: 'Action', key: 'action' },
 ];
 
-const fetchAreaCodes = async () => {
+const fetchCountries = async () => {
   loading.value = true;
   try {
-    areaCodes.value = await $fetch(`${apiBase}/area-code`);
+    countries.value = await $fetch(`${apiBase}/country`);
   } catch (error) {
-    message.error('Failed to fetch area codes');
+    message.error('Failed to fetch countries');
   } finally {
     loading.value = false;
   }
 };
 
-onMounted(fetchAreaCodes);
+onMounted(fetchCountries);
 
 const showModal = (record?: any) => {
   if (record) {
     editingId.value = record.id;
-    formState.code = record.code;
+    formState.name = record.name;
+    formState.phoneCode = record.phoneCode;
   } else {
     editingId.value = null;
-    formState.code = '';
+    formState.name = '';
+    formState.phoneCode = '';
   }
   modalVisible.value = true;
 };
@@ -100,21 +111,21 @@ const handleOk = async () => {
     submitting.value = true;
     
     if (editingId.value) {
-      await $fetch(`${apiBase}/area-code/${editingId.value}`, {
+      await $fetch(`${apiBase}/country/${editingId.value}`, {
         method: 'PATCH',
         body: formState,
       });
-      message.success('Area code updated');
+      message.success('Country updated');
     } else {
-      await $fetch(`${apiBase}/area-code`, {
+      await $fetch(`${apiBase}/country`, {
         method: 'POST',
         body: formState,
       });
-      message.success('Area code created');
+      message.success('Country created');
     }
     
     modalVisible.value = false;
-    fetchAreaCodes();
+    fetchCountries();
   } catch (error) {
     message.error('Operation failed');
   } finally {
@@ -124,11 +135,11 @@ const handleOk = async () => {
 
 const handleDelete = async (id: number) => {
   try {
-    await $fetch(`${apiBase}/area-code/${id}`, {
+    await $fetch(`${apiBase}/country/${id}`, {
       method: 'DELETE',
     });
-    message.success('Area code deleted');
-    fetchAreaCodes();
+    message.success('Country deleted');
+    fetchCountries();
   } catch (error) {
     message.error('Delete failed');
   }

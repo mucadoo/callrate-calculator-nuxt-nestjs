@@ -22,12 +22,11 @@ export class CallingRateController {
   }
 
   @Get('find')
-  @ApiOperation({ summary: 'Find a calling rate by origin and destination area code' })
-  findByAreaCode(
-    @Query('originAreaId', ParseIntPipe) originAreaId: number,
-    @Query('destinationAreaId', ParseIntPipe) destinationAreaId: number,
+  @ApiOperation({ summary: 'Find a calling rate by destination country' })
+  findByCountry(
+    @Query('destinationCountryId', ParseIntPipe) destinationCountryId: number,
   ) {
-    return this.callingRateService.findByAreaCode(originAreaId, destinationAreaId);
+    return this.callingRateService.findByCountry(destinationCountryId);
   }
 
   @Get(':id')

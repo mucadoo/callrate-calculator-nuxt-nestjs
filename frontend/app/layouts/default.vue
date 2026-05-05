@@ -9,11 +9,17 @@
           </template>
           <nuxt-link to="/">Calculator</nuxt-link>
         </a-menu-item>
-        <a-menu-item key="area-codes">
+        <a-menu-item key="countries">
           <template #icon>
-            <environment-outlined />
+            <global-outlined />
           </template>
-          <nuxt-link to="/area-codes">Area Codes</nuxt-link>
+          <nuxt-link to="/countries">Countries</nuxt-link>
+        </a-menu-item>
+        <a-menu-item key="providers">
+          <template #icon>
+            <apartment-outlined />
+          </template>
+          <nuxt-link to="/providers">Providers</nuxt-link>
         </a-menu-item>
         <a-menu-item key="plans">
           <template #icon>
@@ -53,6 +59,8 @@ import {
   EnvironmentOutlined,
   FileProtectOutlined,
   PercentageOutlined,
+  GlobalOutlined,
+  ApartmentOutlined,
 } from '@ant-design/icons-vue';
 
 const collapsed = ref(false);
@@ -70,6 +78,8 @@ const pageTitle = computed(() => {
   switch (route.name) {
     case 'index': return 'Calculator';
     case 'area-codes': return 'Manage Area Codes';
+    case 'countries': return 'Manage Countries';
+    case 'providers': return 'Manage Providers';
     case 'plans': return 'Manage Calling Plans';
     case 'rates': return 'Manage Calling Rates';
     default: return 'CallRate';

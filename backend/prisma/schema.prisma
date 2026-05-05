@@ -6,32 +6,43 @@ datasource db {
   provider = "mysql"
 }
 
-model AreaCode {
-  id               Int           @id @default(autoincrement())
-  code             String        @unique
-  originRates      CallingRate[] @relation("OriginArea")
-  destinationRates CallingRate[] @relation("DestinationArea")
+model Country {
+  id        Int           @id @default(autoincrement())
+  name      String
+  phoneCode String        @unique
+  rates     CallingRate[]
 
-  @@map("area_code")
+  @@map("country")
+}
+
+model Provider {
+  id           Int           @id @default(autoincrement())
+  name         String
+  callingRates CallingRate[]
+  callingPlans CallingPlan[]
+
+  @@map("provider")
 }
 
 model CallingPlan {
-  id                     Int    @id @default(autoincrement())
+  id                     Int       @id @default(autoincrement())
   name                   String
   minutes                Int
   exceededMinutesPercent Float
+  providerId             Int?
+  provider               Provider? @relation(fields: [providerId], references: [id])
 
   @@map("calling_plan")
 }
 
 model CallingRate {
-  id                Int   @id @default(autoincrement())
-  originAreaId      Int
-  destinationAreaId Int
+  id                Int       @id @default(autoincrement())
+  destinationCountryId Int
+  providerId        Int?
   ratePerMin        Float
 
-  originArea      AreaCode @relation("OriginArea", fields: [originAreaId], references: [id])
-  destinationArea AreaCode @relation("DestinationArea", fields: [destinationAreaId], references: [id])
+  destinationCountry Country   @relation(fields: [destinationCountryId], references: [id])
+  provider           Provider? @relation(fields: [providerId], references: [id])
 
   @@map("calling_rate")
 }
