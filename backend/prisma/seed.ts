@@ -1,6 +1,12 @@
 import { PrismaClient } from '@prisma/client';
+import { PrismaMariaDb } from '@prisma/adapter-mariadb';
 
-const prisma = new PrismaClient();
+const connectionString = process.env.DATABASE_URL;
+if (!connectionString) {
+  throw new Error('DATABASE_URL environment variable is not set');
+}
+const adapter = new PrismaMariaDb(connectionString);
+const prisma = new PrismaClient({ adapter });
 
 async function main() {
   const ddds = [
@@ -30,10 +36,10 @@ async function main() {
     });
   }
 
-  const ddd11 = await prisma.dDD.findUnique({ where: { code: '11' } });
-  const ddd16 = await prisma.dDD.findUnique({ where: { code: '16' } });
-  const ddd17 = await prisma.dDD.findUnique({ where: { code: '17' } });
-  const ddd18 = await prisma.dDD.findUnique({ where: { code: '18' } });
+  const ddd11 = (await prisma.dDD.findUnique({ where: { code: '11' } }))!;
+  const ddd16 = (await prisma.dDD.findUnique({ where: { code: '16' } }))!;
+  const ddd17 = (await prisma.dDD.findUnique({ where: { code: '17' } }))!;
+  const ddd18 = (await prisma.dDD.findUnique({ where: { code: '18' } }))!;
 
   const callingRates = [
     { originDDDId: ddd11.id, destinationDDDId: ddd16.id, ratePerMin: 1.9 },

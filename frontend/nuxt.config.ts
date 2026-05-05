@@ -8,6 +8,13 @@ export default defineNuxtConfig({
       apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:3000'
     }
   },
+  vite: {
+    server: {
+      hmr: {
+        clientPort: process.env.NUXT_VITE_HMR_CLIENT_PORT ? parseInt(process.env.NUXT_VITE_HMR_CLIENT_PORT) : undefined
+      }
+    }
+  },
   antd: {
     // Options
   }

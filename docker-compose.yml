@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   db:
     image: mysql:8.0
@@ -11,28 +9,72 @@ services:
       - '3306:3306'
     volumes:
       - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-padmin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      target: development
     ports:
       - '3000:3000'
     environment:
       DATABASE_URL: mysql://root:admin@db:3306/callrate
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    develop:
+      watch:
+        - action: rebuild
+          path: ./backend/package.json
+        - action: sync
+          path: ./backend
+          target: /app
+          ignore:
+            - node_modules
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      target: development
     ports:
       - '8080:3000'
     environment:
       NUXT_PUBLIC_API_BASE: http://localhost:3000
+      NUXT_VITE_HMR_CLIENT_PORT: 8080
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.nuxt
+    develop:
+      watch:
+        - action: rebuild
+          path: ./frontend/package.json
+        - action: sync
+          path: ./frontend
+          target: /app
+          ignore:
+            - node_modules
+            - .nuxt
+            - .output
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
 
 volumes:
   mysql_data:
