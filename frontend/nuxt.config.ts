@@ -13,6 +13,22 @@ export default defineNuxtConfig({
     }
   },
   vite: {
+    optimizeDeps: {
+      include: [
+        'leaflet',
+        '@vue/devtools-core',
+        '@vue/devtools-kit',
+        '@ant-design/icons-vue',
+        'dayjs',
+        'dayjs/plugin/weekday',
+        'dayjs/plugin/localeData',
+        'dayjs/plugin/weekOfYear',
+        'dayjs/plugin/weekYear',
+        'dayjs/plugin/quarterOfYear',
+        'dayjs/plugin/advancedFormat',
+        'dayjs/plugin/customParseFormat',
+      ],
+    },
     server: {
       hmr: {
         clientPort: process.env.NUXT_VITE_HMR_CLIENT_PORT ? parseInt(process.env.NUXT_VITE_HMR_CLIENT_PORT) : undefined
