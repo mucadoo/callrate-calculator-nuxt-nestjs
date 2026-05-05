@@ -1,7 +1,11 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  future: {
+    compatibilityVersion: 4,
+  },
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
+  css: ['ant-design-vue/dist/reset.css'],
   modules: ['@ant-design-vue/nuxt'],
   runtimeConfig: {
     public: {
@@ -16,7 +20,7 @@ export default defineNuxtConfig({
     }
   },
   antd: {
-    // Options
+    extractStyle: true
   }
 })
 
