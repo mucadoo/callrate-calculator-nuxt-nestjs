@@ -17,19 +17,22 @@ async function main() {
   const globalTalk = await prisma.provider.create({ data: { name: 'GlobalTalk' } });
   const uniConnect = await prisma.provider.create({ data: { name: 'UniConnect' } });
 
-  await prisma.callingPlan.createMany({
-    data: [
-      { name: 'TalkMore 30', minutes: 30, exceededMinutesPercent: 10, providerId: globalTalk.id },
-      { name: 'TalkMore 60', minutes: 60, exceededMinutesPercent: 10, providerId: globalTalk.id },
-      { name: 'UniWorld 100', minutes: 100, exceededMinutesPercent: 5, providerId: uniConnect.id },
-    ],
+  const plan1 = await prisma.callingPlan.create({
+    data: { name: 'TalkMore 30', minutes: 30, exceededMinutesPercent: 10, providerId: globalTalk.id },
+  });
+  const plan2 = await prisma.callingPlan.create({
+    data: { name: 'TalkMore 60', minutes: 60, exceededMinutesPercent: 10, providerId: globalTalk.id },
+  });
+  const plan3 = await prisma.callingPlan.create({
+    data: { name: 'UniWorld 100', minutes: 100, exceededMinutesPercent: 5, providerId: uniConnect.id },
   });
 
   await prisma.callingRate.createMany({
     data: [
-      { destinationCountryId: brazil.id, providerId: globalTalk.id, ratePerMin: 1.9 },
-      { destinationCountryId: usa.id, providerId: globalTalk.id, ratePerMin: 5.5 },
-      { destinationCountryId: usa.id, providerId: uniConnect.id, ratePerMin: 0.5 },
+      { planId: plan1.id, destinationCountryId: brazil.id, ratePerMin: 1.9 },
+      { planId: plan1.id, destinationCountryId: usa.id, ratePerMin: 5.5 },
+      { planId: plan2.id, destinationCountryId: brazil.id, ratePerMin: 1.7 },
+      { planId: plan3.id, destinationCountryId: usa.id, ratePerMin: 0.5 },
     ],
   });
 }

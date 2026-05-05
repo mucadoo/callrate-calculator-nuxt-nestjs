@@ -1,4 +1,4 @@
-import { IsNumber, IsPositive, IsOptional } from 'class-validator';
+import { IsNumber, IsPositive } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateCallingRateDto {
@@ -6,10 +6,9 @@ export class CreateCallingRateDto {
   @IsNumber()
   destinationCountryId: number;
 
-  @ApiProperty({ example: 1, description: 'ID of the provider', required: false })
+  @ApiProperty({ example: 1, description: 'ID of the calling plan' })
   @IsNumber()
-  @IsOptional()
-  providerId?: number;
+  planId: number;
 
   @ApiProperty({ example: 1.9, description: 'Rate per minute' })
   @IsNumber()

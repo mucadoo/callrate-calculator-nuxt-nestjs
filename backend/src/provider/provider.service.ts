@@ -18,7 +18,6 @@ export class ProviderService {
       include: {
         _count: {
           select: { 
-            callingRates: true,
             callingPlans: true,
           },
         },
@@ -31,7 +30,6 @@ export class ProviderService {
       where: { id },
       include: {
         callingPlans: true,
-        callingRates: true,
       },
     });
   }

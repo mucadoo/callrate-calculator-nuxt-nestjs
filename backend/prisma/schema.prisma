@@ -18,31 +18,31 @@ model Country {
 model Provider {
   id           Int           @id @default(autoincrement())
   name         String
-  callingRates CallingRate[]
   callingPlans CallingPlan[]
 
   @@map("provider")
 }
 
 model CallingPlan {
-  id                     Int       @id @default(autoincrement())
+  id                     Int           @id @default(autoincrement())
   name                   String
   minutes                Int
   exceededMinutesPercent Float
   providerId             Int?
-  provider               Provider? @relation(fields: [providerId], references: [id])
+  provider               Provider?     @relation(fields: [providerId], references: [id])
+  rates                  CallingRate[]
 
   @@map("calling_plan")
 }
 
 model CallingRate {
-  id                Int       @id @default(autoincrement())
+  id                   Int         @id @default(autoincrement())
   destinationCountryId Int
-  providerId        Int?
-  ratePerMin        Float
+  planId               Int
+  ratePerMin           Float
 
-  destinationCountry Country   @relation(fields: [destinationCountryId], references: [id])
-  provider           Provider? @relation(fields: [providerId], references: [id])
+  destinationCountry   Country     @relation(fields: [destinationCountryId], references: [id])
+  plan                 CallingPlan @relation(fields: [planId], references: [id])
 
   @@map("calling_rate")
 }

@@ -6,39 +6,37 @@ export class CalculationService {
   constructor(private prisma: PrismaService) {}
 
   async compareRates(destinationCountryId: number, minutes: number) {
-    const rates = await this.prisma.callingRate.findMany({
-      where: { destinationCountryId },
+    const plans = await this.prisma.callingPlan.findMany({
       include: {
-        provider: {
-          include: { callingPlans: true },
+        provider: true,
+        rates: {
+          where: { destinationCountryId },
         },
       },
     });
 
-    if (rates.length === 0) {
-      throw new NotFoundException('No rates found for the given country');
+    // Filter plans that have a rate for the chosen country
+    const applicablePlans = plans.filter((plan) => plan.rates.length > 0);
+
+    if (applicablePlans.length === 0) {
+      throw new NotFoundException('No plans found for the given country');
     }
 
-    return rates.map((rate) => {
-      const planResults = (rate.provider?.callingPlans || []).map((plan) => {
-        const exceededPercent = plan.exceededMinutesPercent / 100;
-        let costWithPlan = 0;
-        if (minutes > plan.minutes) {
-          const exceededMinutes = minutes - plan.minutes;
-          costWithPlan = exceededMinutes * (rate.ratePerMin * (1 + exceededPercent));
-        }
-
-        return {
-          planName: plan.name,
-          costWithPlan: parseFloat(costWithPlan.toFixed(2)),
-        };
-      });
+    return applicablePlans.map((plan) => {
+      const rate = plan.rates[0].ratePerMin;
+      const exceededPercent = plan.exceededMinutesPercent / 100;
+      let costWithPlan = 0;
+      if (minutes > plan.minutes) {
+        const exceededMinutes = minutes - plan.minutes;
+        costWithPlan = exceededMinutes * (rate * (1 + exceededPercent));
+      }
 
       return {
-        provider: rate.provider?.name || 'Unknown Provider',
-        standardRate: rate.ratePerMin,
-        standardCost: parseFloat((minutes * rate.ratePerMin).toFixed(2)),
-        plans: planResults,
+        provider: plan.provider?.name || 'Unknown Provider',
+        planName: plan.name,
+        standardRate: rate,
+        standardCost: parseFloat((minutes * rate).toFixed(2)),
+        costWithPlan: parseFloat(costWithPlan.toFixed(2)),
       };
     });
   }

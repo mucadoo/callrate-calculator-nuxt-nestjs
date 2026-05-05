@@ -13,14 +13,14 @@ export class CallingRateService {
       data: createCallingRateDto,
     });
   }
+async findAll(): Promise<CallingRate[]> {
+  return this.prisma.callingRate.findMany({
+    include: {
+      destinationCountry: true,
+    },
+  });
+}
 
-  async findAll(): Promise<CallingRate[]> {
-    return this.prisma.callingRate.findMany({
-      include: {
-        destinationCountry: true,
-      },
-    });
-  }
 
   async findOne(id: number): Promise<CallingRate | null> {
     return this.prisma.callingRate.findUnique({
@@ -34,7 +34,7 @@ export class CallingRateService {
   async findByCountry(destinationCountryId: number): Promise<CallingRate[]> {
     return this.prisma.callingRate.findMany({
       where: { destinationCountryId },
-      include: { provider: true },
+      include: { plan: true },
     });
   }
 
