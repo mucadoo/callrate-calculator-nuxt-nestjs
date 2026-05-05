@@ -13,20 +13,34 @@
         <template v-if="column.key === 'destination'">
           {{ record.destinationCountry?.name }} (+{{ record.destinationCountry?.phoneCode }})
         </template>
+        <template v-else-if="column.key === 'plan'">
+          {{ record.plan?.name || 'N/A' }}
+        </template>
+        <template v-else-if="column.key === 'provider'">
+          {{ record.plan?.provider?.name || 'N/A' }}
+        </template>
         <template v-else-if="column.key === 'rate'">
           ${{ record.ratePerMin.toFixed(2) }}
         </template>
         <template v-else-if="column.key === 'action'">
           <a-space>
-            <a @click="showModal(record)">Edit</a>
-            <a-popconfirm
-              title="Are you sure delete this rate?"
-              ok-text="Yes"
-              cancel-text="No"
-              @confirm="handleDelete(record.id)"
-            >
-              <a style="color: #ff4d4f">Delete</a>
-            </a-popconfirm>
+            <a-tooltip title="Edit">
+              <a-button type="link" size="small" @click="showModal(record)">
+                <template #icon><edit-outlined /></template>
+              </a-button>
+            </a-tooltip>
+            <a-tooltip title="Delete">
+              <a-popconfirm
+                title="Are you sure delete this rate?"
+                ok-text="Yes"
+                cancel-text="No"
+                @confirm="handleDelete(record.id)"
+              >
+                <a-button type="link" size="small" danger>
+                  <template #icon><delete-outlined /></template>
+                </a-button>
+              </a-popconfirm>
+            </a-tooltip>
           </a-space>
         </template>
       </template>
@@ -39,6 +53,17 @@
       :confirm-loading="submitting"
     >
       <a-form :model="formState" layout="vertical" ref="formRef">
+        <a-form-item
+          label="Calling Plan"
+          name="planId"
+          :rules="[{ required: true, message: 'Select plan' }]"
+        >
+          <a-select v-model:value="formState.planId" placeholder="Select">
+            <a-select-option v-for="plan in plans" :key="plan.id" :value="plan.id">
+              {{ plan.name }} ({{ plan.provider?.name }})
+            </a-select-option>
+          </a-select>
+        </a-form-item>
         <a-form-item
           label="Destination Country"
           name="destinationCountryId"
@@ -65,10 +90,11 @@
 <script setup lang="ts">
 import { ref, onMounted, reactive } from 'vue';
 import { message } from 'ant-design-vue';
-import { PlusOutlined } from '@ant-design/icons-vue';
+import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons-vue';
 
 const rates = ref([]);
 const countries = ref([]);
+const plans = ref([]);
 const loading = ref(false);
 const modalVisible = ref(false);
 const submitting = ref(false);
@@ -77,6 +103,7 @@ const formRef = ref();
 
 const formState = reactive({
   destinationCountryId: null,
+  planId: null,
   ratePerMin: 0,
 });
 
@@ -85,6 +112,8 @@ const apiBase = config.public.apiBase;
 
 const columns = [
   { title: 'Destination', key: 'destination' },
+  { title: 'Plan', key: 'plan' },
+  { title: 'Provider', key: 'provider' },
   { title: 'Rate/Min', key: 'rate' },
   { title: 'Action', key: 'action' },
 ];
@@ -92,12 +121,14 @@ const columns = [
 const fetchData = async () => {
   loading.value = true;
   try {
-    const [ratesRes, countriesRes] = await Promise.all([
+    const [ratesRes, countriesRes, plansRes] = await Promise.all([
       $fetch(`${apiBase}/calling-rate`),
       $fetch(`${apiBase}/country`),
+      $fetch(`${apiBase}/calling-plan`),
     ]);
     rates.value = ratesRes;
     countries.value = countriesRes;
+    plans.value = plansRes;
   } catch (error) {
     message.error('Failed to fetch data');
   } finally {
@@ -111,10 +142,12 @@ const showModal = (record?: any) => {
   if (record) {
     editingId.value = record.id;
     formState.destinationCountryId = record.destinationCountryId;
+    formState.planId = record.planId;
     formState.ratePerMin = record.ratePerMin;
   } else {
     editingId.value = null;
     formState.destinationCountryId = null;
+    formState.planId = null;
     formState.ratePerMin = 0;
   }
   modalVisible.value = true;

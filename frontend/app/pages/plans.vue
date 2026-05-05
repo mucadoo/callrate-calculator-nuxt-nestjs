@@ -10,17 +10,28 @@
 
     <a-table :columns="columns" :data-source="plans" :loading="loading" row-key="id">
       <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'action'">
+        <template v-if="column.key === 'provider'">
+          {{ record.provider?.name || 'N/A' }}
+        </template>
+        <template v-else-if="column.key === 'action'">
           <a-space>
-            <a @click="showModal(record)">Edit</a>
-            <a-popconfirm
-              title="Are you sure delete this plan?"
-              ok-text="Yes"
-              cancel-text="No"
-              @confirm="handleDelete(record.id)"
-            >
-              <a style="color: #ff4d4f">Delete</a>
-            </a-popconfirm>
+            <a-tooltip title="Edit">
+              <a-button type="link" size="small" @click="showModal(record)">
+                <template #icon><edit-outlined /></template>
+              </a-button>
+            </a-tooltip>
+            <a-tooltip title="Delete">
+              <a-popconfirm
+                title="Are you sure delete this plan?"
+                ok-text="Yes"
+                cancel-text="No"
+                @confirm="handleDelete(record.id)"
+              >
+                <a-button type="link" size="small" danger>
+                  <template #icon><delete-outlined /></template>
+                </a-button>
+              </a-popconfirm>
+            </a-tooltip>
           </a-space>
         </template>
       </template>
@@ -38,7 +49,16 @@
           name="name"
           :rules="[{ required: true, message: 'Please input plan name' }]"
         >
-          <a-input v-model:value="formState.name" placeholder="e.g. TalkMore 30" />
+          <a-input v-model:value="formState.name" />
+        </a-form-item>
+        <a-form-item
+          label="Provider"
+          name="providerId"
+          :rules="[{ required: true, message: 'Select provider' }]"
+        >
+          <a-select v-model:value="formState.providerId" placeholder="Select">
+            <a-select-option v-for="p in providers" :key="p.id" :value="p.id">{{ p.name }}</a-select-option>
+          </a-select>
         </a-form-item>
         <a-form-item
           label="Included Minutes"
@@ -62,9 +82,10 @@
 <script setup lang="ts">
 import { ref, onMounted, reactive } from 'vue';
 import { message } from 'ant-design-vue';
-import { PlusOutlined } from '@ant-design/icons-vue';
+import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons-vue';
 
 const plans = ref([]);
+const providers = ref([]);
 const loading = ref(false);
 const modalVisible = ref(false);
 const submitting = ref(false);
@@ -75,6 +96,7 @@ const formState = reactive({
   name: '',
   minutes: 0,
   exceededMinutesPercent: 10,
+  providerId: null,
 });
 
 const config = useRuntimeConfig();
@@ -83,23 +105,29 @@ const apiBase = config.public.apiBase;
 const columns = [
   { title: 'ID', dataIndex: 'id', key: 'id' },
   { title: 'Name', dataIndex: 'name', key: 'name' },
+  { title: 'Provider', key: 'provider' },
   { title: 'Minutes', dataIndex: 'minutes', key: 'minutes' },
   { title: 'Exceeded Fee (%)', dataIndex: 'exceededMinutesPercent', key: 'fee' },
   { title: 'Action', key: 'action' },
 ];
 
-const fetchPlans = async () => {
+const fetchData = async () => {
   loading.value = true;
   try {
-    plans.value = await $fetch(`${apiBase}/calling-plan`);
+    const [plansRes, providersRes] = await Promise.all([
+      $fetch(`${apiBase}/calling-plan`),
+      $fetch(`${apiBase}/provider`),
+    ]);
+    plans.value = plansRes;
+    providers.value = providersRes;
   } catch (error) {
-    message.error('Failed to fetch plans');
+    message.error('Failed to fetch data');
   } finally {
     loading.value = false;
   }
 };
 
-onMounted(fetchPlans);
+onMounted(fetchData);
 
 const showModal = (record?: any) => {
   if (record) {
@@ -107,11 +135,13 @@ const showModal = (record?: any) => {
     formState.name = record.name;
     formState.minutes = record.minutes;
     formState.exceededMinutesPercent = record.exceededMinutesPercent;
+    formState.providerId = record.providerId;
   } else {
     editingId.value = null;
     formState.name = '';
     formState.minutes = 0;
     formState.exceededMinutesPercent = 10;
+    formState.providerId = null;
   }
   modalVisible.value = true;
 };
@@ -136,7 +166,7 @@ const handleOk = async () => {
     }
     
     modalVisible.value = false;
-    fetchPlans();
+    fetchData();
   } catch (error) {
     message.error('Operation failed');
   } finally {
@@ -150,7 +180,7 @@ const handleDelete = async (id: number) => {
       method: 'DELETE',
     });
     message.success('Plan deleted');
-    fetchPlans();
+    fetchData();
   } catch (error) {
     message.error('Delete failed');
   }

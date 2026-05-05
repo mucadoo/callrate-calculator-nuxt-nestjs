@@ -15,12 +15,19 @@ export class CallingPlanService {
   }
 
   async findAll(): Promise<CallingPlan[]> {
-    return this.prisma.callingPlan.findMany();
+    return this.prisma.callingPlan.findMany({
+      include: {
+        provider: true,
+      },
+    });
   }
 
   async findOne(id: number): Promise<CallingPlan | null> {
     return this.prisma.callingPlan.findUnique({
       where: { id },
+      include: {
+        provider: true,
+      },
     });
   }
 

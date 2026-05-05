@@ -17,19 +17,29 @@ async findAll(): Promise<CallingRate[]> {
   return this.prisma.callingRate.findMany({
     include: {
       destinationCountry: true,
+      plan: {
+        include: {
+          provider: true,
+        },
+      },
     },
   });
 }
 
-
-  async findOne(id: number): Promise<CallingRate | null> {
-    return this.prisma.callingRate.findUnique({
-      where: { id },
-      include: {
-        destinationCountry: true,
+async findOne(id: number): Promise<CallingRate | null> {
+  return this.prisma.callingRate.findUnique({
+    where: { id },
+    include: {
+      destinationCountry: true,
+      plan: {
+        include: {
+          provider: true,
+        },
       },
-    });
-  }
+    },
+  });
+}
+
 
   async findByCountry(destinationCountryId: number): Promise<CallingRate[]> {
     return this.prisma.callingRate.findMany({

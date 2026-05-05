@@ -10,17 +10,28 @@
 
     <a-table :columns="columns" :data-source="providers" :loading="loading" row-key="id">
       <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'action'">
+        <template v-if="column.key === 'plans'">
+          {{ record._count?.callingPlans || 0 }}
+        </template>
+        <template v-else-if="column.key === 'action'">
           <a-space>
-            <a @click="showModal(record)">Edit</a>
-            <a-popconfirm
-              title="Are you sure delete this provider?"
-              ok-text="Yes"
-              cancel-text="No"
-              @confirm="handleDelete(record.id)"
-            >
-              <a style="color: #ff4d4f">Delete</a>
-            </a-popconfirm>
+            <a-tooltip title="Edit">
+              <a-button type="link" size="small" @click="showModal(record)">
+                <template #icon><edit-outlined /></template>
+              </a-button>
+            </a-tooltip>
+            <a-tooltip title="Delete">
+              <a-popconfirm
+                title="Are you sure delete this provider?"
+                ok-text="Yes"
+                cancel-text="No"
+                @confirm="handleDelete(record.id)"
+              >
+                <a-button type="link" size="small" danger>
+                  <template #icon><delete-outlined /></template>
+                </a-button>
+              </a-popconfirm>
+            </a-tooltip>
           </a-space>
         </template>
       </template>
@@ -48,7 +59,7 @@
 <script setup lang="ts">
 import { ref, onMounted, reactive } from 'vue';
 import { message } from 'ant-design-vue';
-import { PlusOutlined } from '@ant-design/icons-vue';
+import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons-vue';
 
 const providers = ref([]);
 const loading = ref(false);
@@ -67,6 +78,7 @@ const apiBase = config.public.apiBase;
 const columns = [
   { title: 'ID', dataIndex: 'id', key: 'id' },
   { title: 'Name', dataIndex: 'name', key: 'name' },
+  { title: 'Plans Count', key: 'plans' },
   { title: 'Action', key: 'action' },
 ];
 
