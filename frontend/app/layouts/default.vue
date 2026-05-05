@@ -56,7 +56,6 @@ import { ref, computed, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import {
   CalculatorOutlined,
-  EnvironmentOutlined,
   FileProtectOutlined,
   PercentageOutlined,
   GlobalOutlined,
@@ -77,7 +76,6 @@ watch(() => route.name, (newName) => {
 const pageTitle = computed(() => {
   switch (route.name) {
     case 'index': return 'Calculator';
-    case 'area-codes': return 'Manage Area Codes';
     case 'countries': return 'Manage Countries';
     case 'providers': return 'Manage Providers';
     case 'plans': return 'Manage Calling Plans';
