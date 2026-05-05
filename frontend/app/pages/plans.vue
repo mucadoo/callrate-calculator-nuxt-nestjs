@@ -38,7 +38,7 @@
           name="name"
           :rules="[{ required: true, message: 'Please input plan name' }]"
         >
-          <a-input v-model:value="formState.name" placeholder="e.g. FaleMais 30" />
+          <a-input v-model:value="formState.name" placeholder="e.g. TalkMore 30" />
         </a-form-item>
         <a-form-item
           label="Included Minutes"

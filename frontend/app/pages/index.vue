@@ -2,7 +2,7 @@
   <div>
     <a-typography-title :level="3">Plan Comparison Calculator</a-typography-title>
     <a-typography-paragraph>
-      Select the call details to compare standard rates with our FaleMais plans.
+      Select the call details to compare standard rates with our TalkMore plans.
     </a-typography-paragraph>
 
     <a-card style="margin-bottom: 24px">
@@ -80,7 +80,7 @@
         v-if="savings > 0"
         status="success"
         :title="'You save $' + savings.toFixed(2) + '!'"
-        sub-title="Switch to FaleMais today and start saving on every call."
+        sub-title="Switch to TalkMore today and start saving on every call."
         style="padding: 24px 0"
       >
         <template #extra>

@@ -2,7 +2,7 @@ import { IsString, IsNotEmpty, IsNumber, IsPositive } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateCallingPlanDto {
-  @ApiProperty({ example: 'FaleMais 30', description: 'The name of the calling plan' })
+  @ApiProperty({ example: 'TalkMore 30', description: 'The name of the calling plan' })
   @IsString()
   @IsNotEmpty()
   name: string;

@@ -9,6 +9,12 @@ const adapter = new PrismaMariaDb(connectionString);
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
+  // Clear existing data to avoid duplicates on re-seed
+  await prisma.callingRate.deleteMany({});
+  await prisma.callingPlan.deleteMany({});
+  // AreaCode has relations, so we handle it with upsert or careful deletion
+  // For simplicity and since area codes haven't changed much, upsert is fine for them.
+
   const areaCodes = [
     { code: '11' },
     { code: '16' },
@@ -25,9 +31,9 @@ async function main() {
   }
 
   const callingPlans = [
-    { name: 'FaleMais 30', minutes: 30, exceededMinutesPercent: 10 },
-    { name: 'FaleMais 60', minutes: 60, exceededMinutesPercent: 10 },
-    { name: 'FaleMais 120', minutes: 120, exceededMinutesPercent: 10 },
+    { name: 'TalkMore 30', minutes: 30, exceededMinutesPercent: 10 },
+    { name: 'TalkMore 60', minutes: 60, exceededMinutesPercent: 10 },
+    { name: 'TalkMore 120', minutes: 120, exceededMinutesPercent: 10 },
   ];
 
   for (const plan of callingPlans) {
