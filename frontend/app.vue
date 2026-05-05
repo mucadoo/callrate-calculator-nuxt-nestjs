@@ -1,7 +1,7 @@
 <template>
   <a-layout class="layout">
     <a-layout-header>
-      <div class="logo">VxTel</div>
+      <div class="logo">CallRate</div>
       <a-menu
         v-model:selectedKeys="selectedKeys"
         theme="dark"
@@ -133,7 +133,7 @@
       </div>
     </a-layout-content>
     <a-layout-footer style="text-align: center">
-      VxTel ©2026 Refactored by Gemini CLI
+      CallRate ©2026 Refactored by Gemini CLI
     </a-layout-footer>
   </a-layout>
 </template>

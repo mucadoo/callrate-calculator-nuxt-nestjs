@@ -5,7 +5,7 @@ services:
     image: mysql:8.0
     restart: always
     environment:
-      MYSQL_DATABASE: vxtel
+      MYSQL_DATABASE: callrate
       MYSQL_ROOT_PASSWORD: admin
     ports:
       - '3306:3306'
@@ -19,7 +19,7 @@ services:
     ports:
       - '3000:3000'
     environment:
-      DATABASE_URL: mysql://root:admin@db:3306/vxtel
+      DATABASE_URL: mysql://root:admin@db:3306/callrate
     depends_on:
       - db
 
