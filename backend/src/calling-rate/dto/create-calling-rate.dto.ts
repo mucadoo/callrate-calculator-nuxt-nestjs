@@ -2,13 +2,13 @@ import { IsNumber, IsPositive } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateCallingRateDto {
-  @ApiProperty({ example: 1, description: 'ID of the origin DDD' })
+  @ApiProperty({ example: 1, description: 'ID of the origin area code' })
   @IsNumber()
-  originDDDId: number;
+  originAreaId: number;
 
-  @ApiProperty({ example: 2, description: 'ID of the destination DDD' })
+  @ApiProperty({ example: 2, description: 'ID of the destination area code' })
   @IsNumber()
-  destinationDDDId: number;
+  destinationAreaId: number;
 
   @ApiProperty({ example: 1.9, description: 'Rate per minute' })
   @IsNumber()

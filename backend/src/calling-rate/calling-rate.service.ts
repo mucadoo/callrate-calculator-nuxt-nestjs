@@ -17,8 +17,8 @@ export class CallingRateService {
   async findAll(): Promise<CallingRate[]> {
     return this.prisma.callingRate.findMany({
       include: {
-        originDDD: true,
-        destinationDDD: true,
+        originArea: true,
+        destinationArea: true,
       },
     });
   }
@@ -27,17 +27,17 @@ export class CallingRateService {
     return this.prisma.callingRate.findUnique({
       where: { id },
       include: {
-        originDDD: true,
-        destinationDDD: true,
+        originArea: true,
+        destinationArea: true,
       },
     });
   }
 
-  async findByDDD(originDDDId: number, destinationDDDId: number): Promise<CallingRate | null> {
+  async findByAreaCode(originAreaId: number, destinationAreaId: number): Promise<CallingRate | null> {
     return this.prisma.callingRate.findFirst({
       where: {
-        originDDDId,
-        destinationDDDId,
+        originAreaId,
+        destinationAreaId,
       },
     });
   }

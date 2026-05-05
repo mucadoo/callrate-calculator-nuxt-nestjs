@@ -9,16 +9,16 @@ export class CalculationController {
 
   @Get()
   @ApiOperation({ summary: 'Calculate call cost with and without plan' })
-  @ApiQuery({ name: 'originDDDId', type: Number })
-  @ApiQuery({ name: 'destinationDDDId', type: Number })
+  @ApiQuery({ name: 'originAreaId', type: Number })
+  @ApiQuery({ name: 'destinationAreaId', type: Number })
   @ApiQuery({ name: 'minutes', type: Number })
   @ApiQuery({ name: 'callingPlanId', type: Number })
   calculate(
-    @Query('originDDDId', ParseIntPipe) originDDDId: number,
-    @Query('destinationDDDId', ParseIntPipe) destinationDDDId: number,
+    @Query('originAreaId', ParseIntPipe) originAreaId: number,
+    @Query('destinationAreaId', ParseIntPipe) destinationAreaId: number,
     @Query('minutes', ParseIntPipe) minutes: number,
     @Query('callingPlanId', ParseIntPipe) callingPlanId: number,
   ) {
-    return this.calculationService.calculate(originDDDId, destinationDDDId, minutes, callingPlanId);
+    return this.calculationService.calculate(originAreaId, destinationAreaId, minutes, callingPlanId);
   }
 }

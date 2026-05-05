@@ -9,18 +9,18 @@ const adapter = new PrismaMariaDb(connectionString);
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-  const ddds = [
+  const areaCodes = [
     { code: '11' },
     { code: '16' },
     { code: '17' },
     { code: '18' },
   ];
 
-  for (const ddd of ddds) {
-    await prisma.dDD.upsert({
-      where: { code: ddd.code },
+  for (const area of areaCodes) {
+    await prisma.areaCode.upsert({
+      where: { code: area.code },
       update: {},
-      create: ddd,
+      create: area,
     });
   }
 
@@ -36,18 +36,18 @@ async function main() {
     });
   }
 
-  const ddd11 = (await prisma.dDD.findUnique({ where: { code: '11' } }))!;
-  const ddd16 = (await prisma.dDD.findUnique({ where: { code: '16' } }))!;
-  const ddd17 = (await prisma.dDD.findUnique({ where: { code: '17' } }))!;
-  const ddd18 = (await prisma.dDD.findUnique({ where: { code: '18' } }))!;
+  const area11 = (await prisma.areaCode.findUnique({ where: { code: '11' } }))!;
+  const area16 = (await prisma.areaCode.findUnique({ where: { code: '16' } }))!;
+  const area17 = (await prisma.areaCode.findUnique({ where: { code: '17' } }))!;
+  const area18 = (await prisma.areaCode.findUnique({ where: { code: '18' } }))!;
 
   const callingRates = [
-    { originDDDId: ddd11.id, destinationDDDId: ddd16.id, ratePerMin: 1.9 },
-    { originDDDId: ddd16.id, destinationDDDId: ddd11.id, ratePerMin: 2.9 },
-    { originDDDId: ddd11.id, destinationDDDId: ddd17.id, ratePerMin: 1.7 },
-    { originDDDId: ddd17.id, destinationDDDId: ddd11.id, ratePerMin: 2.7 },
-    { originDDDId: ddd11.id, destinationDDDId: ddd18.id, ratePerMin: 0.9 },
-    { originDDDId: ddd18.id, destinationDDDId: ddd11.id, ratePerMin: 1.9 },
+    { originAreaId: area11.id, destinationAreaId: area16.id, ratePerMin: 1.9 },
+    { originAreaId: area16.id, destinationAreaId: area11.id, ratePerMin: 2.9 },
+    { originAreaId: area11.id, destinationAreaId: area17.id, ratePerMin: 1.7 },
+    { originAreaId: area17.id, destinationAreaId: area11.id, ratePerMin: 2.7 },
+    { originAreaId: area11.id, destinationAreaId: area18.id, ratePerMin: 0.9 },
+    { originAreaId: area18.id, destinationAreaId: area11.id, ratePerMin: 1.9 },
   ];
 
   for (const rate of callingRates) {

@@ -5,13 +5,13 @@ import { PrismaService } from '../prisma/prisma.service';
 export class CalculationService {
   constructor(private prisma: PrismaService) {}
 
-  async calculate(originDDDId: number, destinationDDDId: number, minutes: number, callingPlanId: number) {
+  async calculate(originAreaId: number, destinationAreaId: number, minutes: number, callingPlanId: number) {
     const callingRate = await this.prisma.callingRate.findFirst({
-      where: { originDDDId, destinationDDDId },
+      where: { originAreaId, destinationAreaId },
     });
 
     if (!callingRate) {
-      throw new NotFoundException('Calling rate not found for the given DDDs');
+      throw new NotFoundException('Calling rate not found for the given area codes');
     }
 
     const callingPlan = await this.prisma.callingPlan.findUnique({
@@ -37,8 +37,8 @@ export class CalculationService {
     }
 
     return {
-      originDDDId,
-      destinationDDDId,
+      originAreaId,
+      destinationAreaId,
       minutes,
       callingPlan: callingPlan.name,
       costWithPlan: parseFloat(costWithPlan.toFixed(2)),

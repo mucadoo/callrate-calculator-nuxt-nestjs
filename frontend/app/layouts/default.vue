@@ -9,11 +9,11 @@
           </template>
           <nuxt-link to="/">Calculator</nuxt-link>
         </a-menu-item>
-        <a-menu-item key="ddds">
+        <a-menu-item key="area-codes">
           <template #icon>
             <environment-outlined />
           </template>
-          <nuxt-link to="/ddds">DDDs</nuxt-link>
+          <nuxt-link to="/area-codes">Area Codes</nuxt-link>
         </a-menu-item>
         <a-menu-item key="plans">
           <template #icon>
@@ -69,7 +69,7 @@ watch(() => route.name, (newName) => {
 const pageTitle = computed(() => {
   switch (route.name) {
     case 'index': return 'Calculator';
-    case 'ddds': return 'Manage DDDs';
+    case 'area-codes': return 'Manage Area Codes';
     case 'plans': return 'Manage Calling Plans';
     case 'rates': return 'Manage Calling Rates';
     default: return 'CallRate';

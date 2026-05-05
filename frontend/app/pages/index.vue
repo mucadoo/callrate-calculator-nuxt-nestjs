@@ -9,19 +9,19 @@
       <a-form :model="formState" @finish="handleCalculate" layout="vertical">
         <a-row :gutter="24">
           <a-col :xs="24" :sm="12" :md="6">
-            <a-form-item label="Origin DDD" name="originDDDId" :rules="[{ required: true, message: 'Select origin' }]">
-              <a-select v-model:value="formState.originDDDId" placeholder="Select" show-search>
-                <a-select-option v-for="ddd in ddds" :key="ddd.id" :value="ddd.id">
-                  DDD {{ ddd.code }}
+            <a-form-item label="Origin Area Code" name="originAreaId" :rules="[{ required: true, message: 'Select origin' }]">
+              <a-select v-model:value="formState.originAreaId" placeholder="Select" show-search>
+                <a-select-option v-for="area in areaCodes" :key="area.id" :value="area.id">
+                  Area {{ area.code }}
                 </a-select-option>
               </a-select>
             </a-form-item>
           </a-col>
           <a-col :xs="24" :sm="12" :md="6">
-            <a-form-item label="Destination DDD" name="destinationDDDId" :rules="[{ required: true, message: 'Select destination' }]">
-              <a-select v-model:value="formState.destinationDDDId" placeholder="Select" show-search>
-                <a-select-option v-for="ddd in ddds" :key="ddd.id" :value="ddd.id">
-                  DDD {{ ddd.code }}
+            <a-form-item label="Destination Area Code" name="destinationAreaId" :rules="[{ required: true, message: 'Select destination' }]">
+              <a-select v-model:value="formState.destinationAreaId" placeholder="Select" show-search>
+                <a-select-option v-for="area in areaCodes" :key="area.id" :value="area.id">
+                  Area {{ area.code }}
                 </a-select-option>
               </a-select>
             </a-form-item>
@@ -102,14 +102,14 @@
 import { ref, onMounted, reactive, computed } from 'vue';
 import { message } from 'ant-design-vue';
 
-const ddds = ref<any[]>([]);
+const areaCodes = ref<any[]>([]);
 const plans = ref<any[]>([]);
 const calculating = ref(false);
 const result = ref<any>(null);
 
 const formState = reactive({
-  originDDDId: null,
-  destinationDDDId: null,
+  originAreaId: null,
+  destinationAreaId: null,
   minutes: 0,
   callingPlanId: null,
 });
@@ -124,11 +124,11 @@ const savings = computed(() => {
 
 onMounted(async () => {
   try {
-    const [dddsRes, plansRes] = await Promise.all([
-      $fetch(`${apiBase}/ddd`),
+    const [areaCodesRes, plansRes] = await Promise.all([
+      $fetch(`${apiBase}/area-code`),
       $fetch(`${apiBase}/calling-plan`),
     ]);
-    ddds.value = dddsRes as any[];
+    areaCodes.value = areaCodesRes as any[];
     plans.value = plansRes as any[];
   } catch (error) {
     message.error('Failed to load initial data');

@@ -6,13 +6,13 @@ datasource db {
   provider = "mysql"
 }
 
-model DDD {
-  id              Int           @id @default(autoincrement())
-  code            String        @unique
-  originRates      CallingRate[] @relation("OriginDDD")
-  destinationRates CallingRate[] @relation("DestinationDDD")
+model AreaCode {
+  id               Int           @id @default(autoincrement())
+  code             String        @unique
+  originRates      CallingRate[] @relation("OriginArea")
+  destinationRates CallingRate[] @relation("DestinationArea")
 
-  @@map("ddd")
+  @@map("area_code")
 }
 
 model CallingPlan {
@@ -25,13 +25,13 @@ model CallingPlan {
 }
 
 model CallingRate {
-  id               Int   @id @default(autoincrement())
-  originDDDId      Int
-  destinationDDDId Int
-  ratePerMin       Float
+  id                Int   @id @default(autoincrement())
+  originAreaId      Int
+  destinationAreaId Int
+  ratePerMin        Float
 
-  originDDD      DDD @relation("OriginDDD", fields: [originDDDId], references: [id])
-  destinationDDD DDD @relation("DestinationDDD", fields: [destinationDDDId], references: [id])
+  originArea      AreaCode @relation("OriginArea", fields: [originAreaId], references: [id])
+  destinationArea AreaCode @relation("DestinationArea", fields: [destinationAreaId], references: [id])
 
   @@map("calling_rate")
 }

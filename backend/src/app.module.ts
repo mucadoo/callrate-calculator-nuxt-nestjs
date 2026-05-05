@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { DddModule } from './ddd/ddd.module';
+import { AreaCodeModule } from './area-code/area-code.module';
 import { CallingPlanModule } from './calling-plan/calling-plan.module';
 import { CallingRateModule } from './calling-rate/calling-rate.module';
 import { PrismaModule } from './prisma/prisma.module';
@@ -12,7 +12,7 @@ import { CalculationModule } from './calculation/calculation.module';
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     PrismaModule,
-    DddModule,
+    AreaCodeModule,
     CallingPlanModule,
     CallingRateModule,
     CalculationModule,

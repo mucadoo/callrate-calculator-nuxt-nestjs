@@ -1,20 +1,20 @@
 <template>
   <div>
     <div style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center">
-      <a-typography-title :level="4" style="margin: 0">DDD Codes</a-typography-title>
+      <a-typography-title :level="4" style="margin: 0">Area Codes</a-typography-title>
       <a-button type="primary" @click="showModal()">
         <template #icon><plus-outlined /></template>
-        Add DDD
+        Add Area Code
       </a-button>
     </div>
 
-    <a-table :columns="columns" :data-source="ddds" :loading="loading" row-key="id">
+    <a-table :columns="columns" :data-source="areaCodes" :loading="loading" row-key="id">
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'action'">
           <a-space>
             <a @click="showModal(record)">Edit</a>
             <a-popconfirm
-              title="Are you sure delete this DDD?"
+              title="Are you sure delete this area code?"
               ok-text="Yes"
               cancel-text="No"
               @confirm="handleDelete(record.id)"
@@ -28,15 +28,15 @@
 
     <a-modal
       v-model:open="modalVisible"
-      :title="editingId ? 'Edit DDD' : 'Add DDD'"
+      :title="editingId ? 'Edit Area Code' : 'Add Area Code'"
       @ok="handleOk"
       :confirm-loading="submitting"
     >
       <a-form :model="formState" layout="vertical" ref="formRef">
         <a-form-item
-          label="DDD Code"
+          label="Area Code"
           name="code"
-          :rules="[{ required: true, message: 'Please input DDD code' }]"
+          :rules="[{ required: true, message: 'Please input area code' }]"
         >
           <a-input v-model:value="formState.code" placeholder="e.g. 11" />
         </a-form-item>
@@ -50,7 +50,7 @@ import { ref, onMounted, reactive } from 'vue';
 import { message } from 'ant-design-vue';
 import { PlusOutlined } from '@ant-design/icons-vue';
 
-const ddds = ref([]);
+const areaCodes = ref([]);
 const loading = ref(false);
 const modalVisible = ref(false);
 const submitting = ref(false);
@@ -70,18 +70,18 @@ const columns = [
   { title: 'Action', key: 'action' },
 ];
 
-const fetchDDDs = async () => {
+const fetchAreaCodes = async () => {
   loading.value = true;
   try {
-    ddds.value = await $fetch(`${apiBase}/ddd`);
+    areaCodes.value = await $fetch(`${apiBase}/area-code`);
   } catch (error) {
-    message.error('Failed to fetch DDDs');
+    message.error('Failed to fetch area codes');
   } finally {
     loading.value = false;
   }
 };
 
-onMounted(fetchDDDs);
+onMounted(fetchAreaCodes);
 
 const showModal = (record?: any) => {
   if (record) {
@@ -100,21 +100,21 @@ const handleOk = async () => {
     submitting.value = true;
     
     if (editingId.value) {
-      await $fetch(`${apiBase}/ddd/${editingId.value}`, {
+      await $fetch(`${apiBase}/area-code/${editingId.value}`, {
         method: 'PATCH',
         body: formState,
       });
-      message.success('DDD updated');
+      message.success('Area code updated');
     } else {
-      await $fetch(`${apiBase}/ddd`, {
+      await $fetch(`${apiBase}/area-code`, {
         method: 'POST',
         body: formState,
       });
-      message.success('DDD created');
+      message.success('Area code created');
     }
     
     modalVisible.value = false;
-    fetchDDDs();
+    fetchAreaCodes();
   } catch (error) {
     message.error('Operation failed');
   } finally {
@@ -124,11 +124,11 @@ const handleOk = async () => {
 
 const handleDelete = async (id: number) => {
   try {
-    await $fetch(`${apiBase}/ddd/${id}`, {
+    await $fetch(`${apiBase}/area-code/${id}`, {
       method: 'DELETE',
     });
-    message.success('DDD deleted');
-    fetchDDDs();
+    message.success('Area code deleted');
+    fetchAreaCodes();
   } catch (error) {
     message.error('Delete failed');
   }
