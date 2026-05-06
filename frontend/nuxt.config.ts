@@ -12,10 +12,13 @@ export default defineNuxtConfig({
       apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:3000'
     }
   },
+  experimental: {
+    appManifest: false
+  },
   vite: {
     optimizeDeps: {
       include: [
-        'leaflet',
+        'd3',
         '@vue/devtools-core',
         '@vue/devtools-kit',
         '@ant-design/icons-vue',

@@ -12,12 +12,15 @@
   "dependencies": {
     "@ant-design-vue/nuxt": "^1.4.6",
     "@ant-design/icons-vue": "^7.0.1",
-    "@types/leaflet": "^1.9.21",
     "ant-design-vue": "^4.2.6",
-    "leaflet": "^1.9.4",
+    "d3": "^7.9.0",
     "nuxt": "^4.4.4",
+    "topojson-client": "^3.1.0",
     "vue": "^3.5.33",
-    "vue-leaflet": "^0.1.0",
     "vue-router": "^5.0.6"
+  },
+  "devDependencies": {
+    "@types/d3": "^7.4.3",
+    "@types/topojson-client": "^3.1.5"
   }
 }

@@ -4,12 +4,15 @@ COPY package*.json ./
 
 # Development stage
 FROM base AS development
+RUN npm install -g nodemon
 RUN npm install
 COPY . .
 ENV NUXT_HOST=0.0.0.0
 ENV NUXT_PORT=3000
 EXPOSE 3000
-CMD ["npm", "run", "dev"]
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+CMD ["/usr/local/bin/entrypoint.sh"]
 
 # Build stage
 FROM base AS builder
